@@ -30,5 +30,13 @@ class ProductListTests: XCTestCase {
             // Put the code you want to measure the time of here.
         }
     }
+    
+    //Decided not to implement NetworkService or URLRequests. This test will now fail
+//    func testProductsRequestURL() {
+//        let request = ProductsRequest(page: 1, numberOfItems: 10)
+//        XCTAssertEqual(request.path, "/walmartproducts/1/10/")
+//
+//        XCTAssertEqual(request.endpointString, "https://mobile-tha-server.firebaseapp.com/walmartproducts/1/10/")
+//    }
 
 }
