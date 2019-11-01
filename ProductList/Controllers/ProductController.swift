@@ -103,25 +103,30 @@ class ProductController: UIViewController, UITableViewDelegate, UITableViewDataS
         return cell
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell = self.tableView.cellForRow(at: indexPath) as! ProductCell
-        selectedImage = cell.productImage.image
-        tableView.deselectRow(at: indexPath, animated: true)
-        performSegue(withIdentifier: "toDetail", sender: indexPath.row)
-    }
+    /* Don't use this method when you create a segue from a cell in Storyboard. The segue happens before the productImage is set.
+    */
+//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        let cell = tableView.cellForRow(at: indexPath) as! ProductCell
+//        self.selectedImage = cell.productImage?.image
+//        tableView.deselectRow(at: indexPath, animated: true)
+//    }
     
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let indexPath = tableView.indexPathForSelectedRow {
-            guard let destinationVC = segue.destination as? ProductDetailController else {return}
-            destinationVC.index = indexPath.row
-            destinationVC.selectedImage = self.selectedImage
-            destinationVC.product = self.products?[indexPath.row]
+      
+        if segue.identifier == "toDetail",
+            let destinationVC = segue.destination as? ProductDetailController,
+            let index = tableView.indexPathForSelectedRow?.row
+        {
+            let cell = tableView.cellForRow(at: tableView.indexPathForSelectedRow!) as! ProductCell
+            destinationVC.selectedImage = cell.productImage?.image
+            destinationVC.product = products?[index]
         }
     }
+    
     
 }
 
