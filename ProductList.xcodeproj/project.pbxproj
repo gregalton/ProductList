@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		984F146A236F6EC90096886C /* LoadingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 984F1468236F6EC90096886C /* LoadingTableViewCell.swift */; };
+		984F146B236F6EC90096886C /* LoadingTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 984F1469236F6EC90096886C /* LoadingTableViewCell.xib */; };
 		98550697236074DD001B12BE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98550696236074DD001B12BE /* AppDelegate.swift */; };
 		98550699236074DD001B12BE /* ProductController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98550698236074DD001B12BE /* ProductController.swift */; };
 		9855069C236074DD001B12BE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9855069A236074DD001B12BE /* Main.storyboard */; };
@@ -39,6 +41,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		984F1468236F6EC90096886C /* LoadingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingTableViewCell.swift; sourceTree = "<group>"; };
+		984F1469236F6EC90096886C /* LoadingTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoadingTableViewCell.xib; sourceTree = "<group>"; };
 		98550693236074DD001B12BE /* ProductList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProductList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		98550696236074DD001B12BE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		98550698236074DD001B12BE /* ProductController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductController.swift; sourceTree = "<group>"; };
@@ -160,6 +164,8 @@
 			isa = PBXGroup;
 			children = (
 				985506C72360791D001B12BE /* ProductCell.swift */,
+				984F1468236F6EC90096886C /* LoadingTableViewCell.swift */,
+				984F1469236F6EC90096886C /* LoadingTableViewCell.xib */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -270,6 +276,7 @@
 			files = (
 				985506A4236074E0001B12BE /* LaunchScreen.storyboard in Resources */,
 				985506A1236074E0001B12BE /* Assets.xcassets in Resources */,
+				984F146B236F6EC90096886C /* LoadingTableViewCell.xib in Resources */,
 				9855069C236074DD001B12BE /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -301,6 +308,7 @@
 				98550697236074DD001B12BE /* AppDelegate.swift in Sources */,
 				9855069F236074DD001B12BE /* ProductList.xcdatamodeld in Sources */,
 				985506D723662C1D001B12BE /* ProductDetailController.swift in Sources */,
+				984F146A236F6EC90096886C /* LoadingTableViewCell.swift in Sources */,
 				985506F9236B0C7D001B12BE /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

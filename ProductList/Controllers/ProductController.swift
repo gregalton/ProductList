@@ -16,7 +16,7 @@ struct Root {
     init(json: [String: Any]) {
         products = json["products"] as? [[String: Any]] ?? [["": ""]]
         totalProducts = json["totalProducts"] as? Int ?? -1
-        pageNumber = json["pageNumber"] as? Int ?? -1
+        pageNumber = json["pageNumber"] as? Int ?? 1
         pageSize = json["pageSize"] as? Int ?? -1
         statusCode = json["statusCode"] as? Int ?? 500
     }
@@ -27,32 +27,36 @@ import UIKit
 class ProductController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITableViewDataSourcePrefetching {
     
     @IBOutlet weak var tableView: UITableView!
-    
+    let loadingCellIdentifier = "loadingCell"
     let endpointString = "https://mobile-tha-server.firebaseapp.com/walmartproducts/"
     
-    var totalProducts: Int?
-    var pageNumber: Int?
-    var pageSize: Int?
+    var totalProducts: Int = 224
+    var pageNumber: Int = 1
+    var pageSize: Int = 20
+    var reloadIndex: Int?
     var selectedImage: UIImage?
+    var loading: Bool = false
 
-    var products: [Product]? {
-        didSet {
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
-            
-        }
-    }
+    var products: [Product] = []
   
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.register(UINib(nibName: "LoadingTableViewCell", bundle: nil), forCellReuseIdentifier: loadingCellIdentifier)
         self.pageNumber = 1
         self.pageSize = 20
         getProducts()
     }
     
     func getProducts() {
-        let endpointWithParamsString = "\(endpointString)\(pageNumber ?? 1)/\(pageSize ?? 20)/"
+        
+        if loading {
+            return
+        }
+        
+        loading = true
+        
+        let endpointWithParamsString = "\(endpointString)\(pageNumber)/\(pageSize)/"
+        print(endpointWithParamsString)
         guard let url = URL(string: endpointWithParamsString) else {return}
         
         URLSession.shared.dataTask(with: url) { [weak self] (data, response, error) in
@@ -66,19 +70,23 @@ class ProductController: UIViewController, UITableViewDelegate, UITableViewDataS
             
             do {
                 guard let root = try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String: Any] else {return}
-                self?.totalProducts = root["totalProducts"] as? Int
-                self?.pageNumber = root["pageNumber"] as? Int
-                self?.pageSize = root["pageSize"] as? Int
                 
-                
-                if let productsNode = root["products"] as? [[String: Any]] {
-                    var tempProducts = [Product]()
-                    for aProduct in productsNode {
-                        let product = Product(json: aProduct)
-                        tempProducts.append(product)
-                        print(product.productName ?? "Name unavailable")
+                DispatchQueue.main.async {
+                    self?.totalProducts = root["totalProducts"] as? Int ?? 224
+                    self?.pageNumber += 1
+
+                    if let productsNode = root["products"] as? [[String: Any]] {
+                        for aProduct in productsNode {
+                            let product = Product(json: aProduct)
+                            if self?.products != nil {
+                                self?.products.append(product)
+                            } else {
+                                self?.products = [product]
+                            }
+                        }
+                        self?.loading = false
+                        self?.tableView.reloadData()
                     }
-                    self?.products = tempProducts
                 }
                 
             } catch let error {
@@ -93,26 +101,19 @@ class ProductController: UIViewController, UITableViewDelegate, UITableViewDataS
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return products?.count ?? 0
+        //return products?.count ?? 0
+        return self.products.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let product = self.products?[indexPath.row] else { return UITableViewCell()}
         let cell = tableView.dequeueReusableCell(withIdentifier: "CellID") as! ProductCell
-        cell.product = product
+        cell.product = self.products[indexPath.row]
         return cell
     }
     
-    /* Don't use this method when you create a segue from a cell in Storyboard. The segue happens before the productImage is set.
-    */
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let cell = tableView.cellForRow(at: indexPath) as! ProductCell
-//        self.selectedImage = cell.productImage?.image
-//        tableView.deselectRow(at: indexPath, animated: true)
-//    }
-    
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
-        
+        print("prefetching row of \(indexPaths)")
+        self.getProducts()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -123,11 +124,9 @@ class ProductController: UIViewController, UITableViewDelegate, UITableViewDataS
         {
             let cell = tableView.cellForRow(at: tableView.indexPathForSelectedRow!) as! ProductCell
             destinationVC.selectedImage = cell.productImage?.image
-            destinationVC.product = products?[index]
+            destinationVC.product = products[index]
         }
     }
-    
-    
 }
 
 
