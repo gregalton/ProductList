@@ -66,6 +66,12 @@ class ProductController: UIViewController, UITableViewDelegate, UITableViewDataS
                 return
             }
             
+//            if let itemCount = self?.products.count, let totalItems = self?.totalProducts {
+//                if itemCount > 1 && itemCount >= totalItems {
+//                    return
+//                }
+//            }
+            
             guard let data = data else {return}
             
             do {
@@ -73,6 +79,8 @@ class ProductController: UIViewController, UITableViewDelegate, UITableViewDataS
                 
                 DispatchQueue.main.async {
                     self?.totalProducts = root["totalProducts"] as? Int ?? 224
+                    print("page number: ", self?.pageNumber)
+                    print("items collected: ", self?.products.count)
                     self?.pageNumber += 1
 
                     if let productsNode = root["products"] as? [[String: Any]] {
@@ -86,6 +94,7 @@ class ProductController: UIViewController, UITableViewDelegate, UITableViewDataS
                         }
                         self?.loading = false
                         self?.tableView.reloadData()
+                        
                     }
                 }
                 
@@ -113,7 +122,14 @@ class ProductController: UIViewController, UITableViewDelegate, UITableViewDataS
     
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         print("prefetching row of \(indexPaths)")
-        self.getProducts()
+        
+        for index in indexPaths {
+            print("index row: ", index.row)
+            if index.row > 0 && index.row >= self.products.count - 1 && self.products.count != self.totalProducts {
+                self.getProducts()
+                return
+            }
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
